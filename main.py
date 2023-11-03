@@ -10,66 +10,16 @@ from fastapi.responses import JSONResponse
 
 app = FastAPI()
 
-@app.get("/", response_class=HTMLResponse)
-async def incio ():
-    principal= """
-    <!DOCTYPE html>
-    <html>
-        <head>
-            <title>API Steam</title>
-            <style>
-                body {
-                    font-family: Arial, sans-serif;
-                    padding: 20px;
-                }
-                h1 {
-                    color: #333;
-                    text-align: center;
-                }
-                p {
-                    color: #666;
-                    text-align: center;
-                    font-size: 18px;
-                    margin-top: 20px;
-                }
-            </style>
-        </head>
-        <body>
-            <h1>API de consultas sobre juegos de la plataforma Steam</h1>
-            <p>¡Bienvenido a la API de Steam!
-            Puede hacer sus consultas en el siguiente link:</p>
-            <a href="https://deploy-p1-milagros.onrender.com/docs">
-            
-            <p>Milagros Torres -</p>
-        </body>
-    </html>
-
-        """    
-    return principal
-
-
 
 @app.get("/playtimegenre/{genero}")
 async def PlayTimeGenre(genero: str):
     '''
-    Función que recibe como parametro un genero (str), y retorna el año de lanzamiento con más horas jugadas para ese genero.
-    Primero se filtran los años por genero, luego se agrupa por año y se suman las horas jugadas.
-    Por ultimo, encuentra el año con más horas jugadas.
-    items_games = pd.read_parquet('Data/df_funcion_1.parquet')
+    Función que recibe como parametro un genero (str), y retorna el año de lanzamiento con más horas jugadas para dicho genero.
 
-    genre_data = items_games[items_games['genres'].str.contains(genero, case=False, na=False)]
-
-    # Agrupa por año y suma las horas jugadas
-    genre_by_year = genre_data.groupby('release_year')['playtime_forever'].sum().reset_index()
-
-    # Encuentra el año con más horas jugadas
-    year_with_most_playtime = genre_by_year.loc[genre_by_year['playtime_forever'].idxmax()]
-
-    return {"Año de lanzamiento con más horas jugadas para " + genero: year_with_most_playtime['release_year']}
     '''
     try:
         # Intenta cargar los datos
-        items_games = pd.read_parquet('df_funcion_1.parquet')
+        items_games = pd.read_parquet('Data/df_funcion_1.parquet')
 
         # Filtra los datos por género
         genre_data = items_games[items_games['genres'] == genero]
@@ -87,11 +37,18 @@ async def PlayTimeGenre(genero: str):
         # Maneja la excepción y devuelve una respuesta de error
         error_message = "Ocurrió un error al procesar la solicitud: " + str(e)
         return JSONResponse(content={"error": error_message}, status_code=500)
+    
+
+    
+items_games_2 = pd.read_parquet('Data/df_funcion_2.parquet')
 
 @app.get("/userforgenre/{genero}")
 async def UserForGenre(genero: str):
+    '''
+    Función que recibe como parametro un genero y retorna el usuario con más horas jugadas para dicho genero, y la acumulación de horas jugadas por año.
 
-    items_games_2 = pd.read_parquet('Data/df_funcion_2.parquet')
+    '''
+
     # Filtra los datos por género
     genre_data = items_games_2[items_games_2['genres'] == genero]
 
@@ -118,6 +75,10 @@ async def UserForGenre(genero: str):
 
 @app.get("/usersrecommend/{anio}")
 async def UsersRecommend(anio: int):
+    '''
+    Función que recibe como parametro un año y retorna el top 3 de juegos más recomendados para dicho año.
+    
+    '''
 
     reviews_games = pd.read_parquet('Data/df_funcion_3y4.parquet')
 
@@ -144,6 +105,10 @@ async def UsersRecommend(anio: int):
 
 @app.get("/usersnotrecommend/{anio}")
 async def UsersNotRecommend(anio: int):
+    '''
+    Función que recibe como parametro un año y retorna el top 3 de juegos menos recomendados para dicho año.
+    
+    '''
 
     reviews_games = pd.read_parquet('Data/df_funcion_3y4.parquet')
 
@@ -168,10 +133,14 @@ async def UsersNotRecommend(anio: int):
 
 @app.get("/sentimentanalysis/{anio}")
 async def SentimentAnalysis(anio: int):
+    '''
+    Función que recibe como parametro un año y retorna la cantidad de reseñas positivas, negativas y neutrales para dicho año.
+    
+    '''
 
     reviews_games_2 = pd.read_parquet('Data/df_funcion_5.parquet')
 
-        # Filtra los datos por el año dado
+    # Filtra los datos por el año dado
     reviews_year = reviews_games_2[reviews_games_2['release_year'] == int(anio)]
 
     Negativos = 0
@@ -193,6 +162,10 @@ async def SentimentAnalysis(anio: int):
 
 @app.get("/gamerecommendation/{id}")
 async def GameRecommendation(id: int):
+    '''
+    Función que recibe como parametro un id de juego y retorna el top 5 de juegos similares.
+
+    '''
     cosine_sim = np.load('Data/similitud.npy')
 
     steam_games_final = pd.read_parquet('Data/steamgames_items_items.parquet')

@@ -1,4 +1,4 @@
-# Proyecto individual n° 1:
+# PROYECTO INDIVIDUAL - 1:
 # Recomendación de Juegos Steam con MLOps
 
 
