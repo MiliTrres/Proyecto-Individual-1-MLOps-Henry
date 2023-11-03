@@ -5,6 +5,7 @@ from fastapi.responses import HTMLResponse
 from fastapi import HTTPException
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
+from fastapi.responses import JSONResponse
 
 app = FastAPI()
 
@@ -12,12 +13,16 @@ app = FastAPI()
 
 @app.get("/playtimegenre/{genero}")
 async def PlayTimeGenre(genero: str):
- 
-
+    '''
+    Función que recibe como parametro un genero (str), y retorna el año de lanzamiento con más horas jugadas para ese genero.
+    Primero se filtran los años por genero, luego se agrupa por año y se suman las horas jugadas.
+    Por ultimo, encuentra el año con más horas jugadas.
+    
+    '''
+    '''
     items_games = pd.read_parquet('Data/df_funcion_1.parquet')
 
-    genre_data = items_games[items_games['genres'] == genero]
-
+    genre_data = items_games[items_games['genres'].str.contains(genero, case=False, na=False)]
 
     # Agrupa por año y suma las horas jugadas
     genre_by_year = genre_data.groupby('release_year')['playtime_forever'].sum().reset_index()
@@ -25,8 +30,28 @@ async def PlayTimeGenre(genero: str):
     # Encuentra el año con más horas jugadas
     year_with_most_playtime = genre_by_year.loc[genre_by_year['playtime_forever'].idxmax()]
 
-    return {"Año de lanzamiento con más horas jugadas para " + genero: int(year_with_most_playtime['release_year'])}
+    return {"Año de lanzamiento con más horas jugadas para " + genero: year_with_most_playtime['release_year']}
+    '''
+    try:
+        # Intenta cargar los datos
+        items_games = pd.read_parquet('Data/df_funcion_1.parquet')
 
+        # Filtra los datos por género
+        genre_data = items_games[items_games['genres'].str.contains(genero, case=False, na=False)]
+
+        # Agrupa por año y suma las horas jugadas
+        genre_by_year = genre_data.groupby('release_year')['playtime_forever'].sum().reset_index()
+
+        # Encuentra el año con más horas jugadas
+        year_with_most_playtime = genre_by_year.loc[genre_by_year['playtime_forever'].idxmax()]
+
+        result = {"Año de lanzamiento con más horas jugadas para " + genero: year_with_most_playtime['release_year']}
+        
+        return result
+    except Exception as e:
+        # Maneja la excepción y devuelve una respuesta de error
+        error_message = "Ocurrió un error al procesar la solicitud: " + str(e)
+        return JSONResponse(content={"error": error_message}, status_code=500)
 
 @app.get("/userforgenre/{genero}")
 async def UserForGenre(genero: str):
