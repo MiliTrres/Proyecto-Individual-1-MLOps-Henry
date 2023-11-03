@@ -12,16 +12,12 @@ app = FastAPI()
 
 @app.get("/playtimegenre/{genero}")
 async def PlayTimeGenre(genero: str):
-    '''
-    Función que recibe como parametro un genero (str), y retorna el año de lanzamiento con más horas jugadas para ese genero.
-    Primero se filtran los años por genero, luego se agrupa por año y se suman las horas jugadas.
-    Por ultimo, encuentra el año con más horas jugadas.
-    
-    '''
+ 
 
     items_games = pd.read_parquet('Data/df_funcion_1.parquet')
 
-    genre_data = items_games[items_games['genres'].str.contains(genero, case=False, na=False)]
+    genre_data = items_games[items_games['genres'] == genero]
+
 
     # Agrupa por año y suma las horas jugadas
     genre_by_year = genre_data.groupby('release_year')['playtime_forever'].sum().reset_index()
