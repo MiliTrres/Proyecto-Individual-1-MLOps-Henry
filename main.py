@@ -32,7 +32,7 @@ async def PlayTimeGenre(genero: str):
     '''
     try:
         # Intenta cargar los datos
-        items_games = pd.read_parquet('Data/df_funcion_1.parquet')
+        items_games = pd.read_parquet('df_funcion_1.parquet')
 
         # Filtra los datos por género
         genre_data = items_games[items_games['genres'] == genero]
