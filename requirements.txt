@@ -1,1 +1,16 @@
+ pandas
+ numpy
+ matplotlib
+ seaborn
+ TextBlob
+ WordCloud
+ pyarrow
+ bs4
+ requests
+ ast
+ sklearn
+ pyarrow
+ scipy
+ fastapi
+ uvicorn
  
