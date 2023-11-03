@@ -8,10 +8,7 @@ import numpy as np
 
 app = FastAPI()
 
-items_games = pd.read_parquet('Data/df_funcion_1.parquet')
-items_games_2 = pd.read_parquet('Data/df_funcion_2.parquet')
-reviews_games_2 = pd.read_parquet('Data/df_funcion_5.parquet')
-steam_games_final = pd.read_parquet('Data/steamgames_items_items.parquet')
+
 
 @app.get("/playtimegenre/{genero}")
 async def PlayTimeGenre(genero: str):
@@ -21,6 +18,9 @@ async def PlayTimeGenre(genero: str):
     Por ultimo, encuentra el año con más horas jugadas.
     
     '''
+
+    items_games = pd.read_parquet('Data/df_funcion_1.parquet')
+
     genre_data = items_games[items_games['genres'].str.contains(genero, case=False, na=False)]
 
     # Agrupa por año y suma las horas jugadas
@@ -34,6 +34,8 @@ async def PlayTimeGenre(genero: str):
 
 @app.get("/userforgenre/{genero}")
 async def UserForGenre(genero: str):
+
+    items_games_2 = pd.read_parquet('Data/df_funcion_2.parquet')
     # Filtra los datos por género
     genre_data = items_games_2[items_games_2['genres'].str.contains(genero, case=False, na=False)]
 
@@ -111,6 +113,8 @@ async def UsersNotRecommend(anio: int):
 @app.get("/sentimentanalysis/{anio}")
 async def SentimentAnalysis(anio: int):
 
+    reviews_games_2 = pd.read_parquet('Data/df_funcion_5.parquet')
+
         # Filtra los datos por el año dado
     reviews_year = reviews_games_2[reviews_games_2['release_year'] == int(anio)]
 
@@ -134,6 +138,8 @@ async def SentimentAnalysis(anio: int):
 @app.get("/gamerecommendation/{id}")
 async def GameRecommendation(id: int):
     cosine_sim = np.load('Data/similitud.npy')
+
+    steam_games_final = pd.read_parquet('Data/steamgames_items_items.parquet')
 
     idx = steam_games_final[steam_games_final['id'] == float(id)].index[0]
 
