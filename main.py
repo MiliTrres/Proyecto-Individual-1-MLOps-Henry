@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 import uvicorn
 import pandas as pd
-#from fastapi.responses import HTMLResponse
-#from fastapi import HTTPException
+from fastapi.responses import HTMLResponse
+from fastapi import HTTPException
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
