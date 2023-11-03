@@ -1,3 +1,4 @@
+ 
 from fastapi import FastAPI
 import uvicorn
 import pandas as pd
@@ -17,9 +18,6 @@ async def PlayTimeGenre(genero: str):
     Función que recibe como parametro un genero (str), y retorna el año de lanzamiento con más horas jugadas para ese genero.
     Primero se filtran los años por genero, luego se agrupa por año y se suman las horas jugadas.
     Por ultimo, encuentra el año con más horas jugadas.
-    
-    '''
-    '''
     items_games = pd.read_parquet('Data/df_funcion_1.parquet')
 
     genre_data = items_games[items_games['genres'].str.contains(genero, case=False, na=False)]
@@ -37,7 +35,7 @@ async def PlayTimeGenre(genero: str):
         items_games = pd.read_parquet('Data/df_funcion_1.parquet')
 
         # Filtra los datos por género
-        genre_data = items_games[items_games['genres'].str.contains(genero, case=False, na=False)]
+        genre_data = items_games[items_games['genres'] == genero]
 
         # Agrupa por año y suma las horas jugadas
         genre_by_year = genre_data.groupby('release_year')['playtime_forever'].sum().reset_index()
@@ -58,7 +56,7 @@ async def UserForGenre(genero: str):
 
     items_games_2 = pd.read_parquet('Data/df_funcion_2.parquet')
     # Filtra los datos por género
-    genre_data = items_games_2[items_games_2['genres'].str.contains(genero, case=False, na=False)]
+    genre_data = items_games_2[items_games_2['genres'] == genero]
 
     # Agrupa por usuario y suma las horas jugadas
     user_playtime = genre_data.groupby('user_id')['playtime_forever'].sum().reset_index()
@@ -162,13 +160,11 @@ async def GameRecommendation(id: int):
 
     steam_games_final = pd.read_parquet('Data/steamgames_items_items.parquet')
 
-    idx = steam_games_final[steam_games_final['id'] == float(id)].index[0]
+    idx = steam_games_final[steam_games_final['id'] == id].index[0]
 
     rec_indices = cosine_sim[idx]
     rec_games = steam_games_final.iloc[rec_indices]['app_name']
 
-    print(f'TOP 5 juegos similares a {id}:')
-    print('-----' * 8)
 
     recomendaciones = []  # Lista para almacenar las recomendaciones
 
@@ -179,4 +175,5 @@ async def GameRecommendation(id: int):
         if count == 5:
             break
 
-    return recomendaciones 
+    return {
+        'TOP 5 juegos similares:': recomendaciones }
