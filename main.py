@@ -10,6 +10,43 @@ from fastapi.responses import JSONResponse
 
 app = FastAPI()
 
+@app.get("/", response_class=HTMLResponse)
+async def incio ():
+    principal= """
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <title>API Steam</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    padding: 20px;
+                }
+                h1 {
+                    color: #333;
+                    text-align: center;
+                }
+                p {
+                    color: #666;
+                    text-align: center;
+                    font-size: 18px;
+                    margin-top: 20px;
+                }
+            </style>
+        </head>
+        <body>
+            <h1>API de consultas sobre juegos de la plataforma Steam</h1>
+            <p>¡Bienvenido a la API de Steam!
+            Puede hacer sus consultas en el siguiente link:</p>
+            <a href="https://deploy-p1-milagros.onrender.com/docs">
+            
+            <p>Milagros Torres -</p>
+        </body>
+    </html>
+
+        """    
+    return principal
+
 
 
 @app.get("/playtimegenre/{genero}")
@@ -175,5 +212,4 @@ async def GameRecommendation(id: int):
         if count == 5:
             break
 
-    return {
-        'TOP 5 juegos similares:': recomendaciones }
+    return {'TOP 5 juegos similares:': recomendaciones }

@@ -63,8 +63,5 @@ Para el desarrollo del Sistema de Recomendación, usamos el dataset resultante d
 
 ### Despliegue
 
-La API se desplegó en Render.com y está disponible en []().
+La API se desplegó en Render.com y está disponible en [https://deploy-p1-milagros.onrender.com/docs](https://deploy-p1-milagros.onrender.com/docs).
 
-## Video
-
-Para obtener una explicación y demostración del funcionamiento de la API, consulta el [vídeo]().
